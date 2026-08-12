@@ -146,22 +146,33 @@ async function resolveRoutePoints(mapEl) {
 }
 
 async function fetchDrivingRoute(coords) {
-  const coordinateString = coords.map(([lng, lat]) => `${lng},${lat}`).join(';');
-  const params = new URLSearchParams({
-    alternatives: 'false',
-    geometries: 'geojson',
-    overview: 'full',
-    steps: 'false',
-    access_token: MAPBOX_TOKEN
-  });
-  const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinateString}?${params}`);
+  // Minimal Directions API request per Mapbox documentation.
+  // Coordinates are longitude,latitude and are visited in the supplied order.
+  const coordinateString = coords
+    .map(([lng, lat]) => `${Number(lng).toFixed(6)},${Number(lat).toFixed(6)}`)
+    .join(';');
+
+  const url = new URL(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinateString}`);
+  url.searchParams.set('geometries', 'geojson');
+  url.searchParams.set('overview', 'full');
+  url.searchParams.set('access_token', MAPBOX_TOKEN);
+
+  console.info('Mapbox Directions request:', url.toString().replace(MAPBOX_TOKEN, '[TOKEN]'));
+
+  const response = await fetch(url.toString());
+  const raw = await response.text();
+  let data = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch (_) {}
+
   if (!response.ok) {
-    const detail = await response.text().catch(() => '');
-    throw new Error(`Mapbox Directions gaf ${response.status}${detail ? `: ${detail.slice(0, 140)}` : ''}`);
+    const apiMessage = data?.message || data?.code || raw || `HTTP ${response.status}`;
+    throw new Error(`Mapbox Directions ${response.status}: ${apiMessage}`);
   }
-  const data = await response.json();
-  if (data.code && data.code !== 'Ok') throw new Error(`Mapbox: ${data.code}${data.message ? ` — ${data.message}` : ''}`);
-  if (!data.routes?.[0]?.geometry) throw new Error('Geen route gevonden.');
+
+  if (data?.code && data.code !== 'Ok') {
+    throw new Error(`Mapbox: ${data.code}${data.message ? ` — ${data.message}` : ''}`);
+  }
+  if (!data?.routes?.[0]?.geometry) throw new Error('Geen route gevonden.');
   return data.routes[0];
 }
 

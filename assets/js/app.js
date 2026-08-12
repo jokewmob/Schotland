@@ -53,7 +53,59 @@ function parseCoords(value) {
   return parts.length === 2 && parts.every(Number.isFinite) ? parts : null;
 }
 
+const FIXED_ROUTE_POINTS = {
+  'Edinburgh Airport naar The Luib Hotel': {
+    names: ['Edinburgh Airport', 'Callander', 'The Luib Hotel'],
+    coords: [
+      [-3.3607946, 55.9471784],
+      [-4.21446, 56.24403],
+      [-4.4426426, 56.4194488]
+    ]
+  },
+  'Luib naar Carbost via Glencoe en Glenfinnan': {
+    names: ['The Luib Hotel', 'Glencoe', 'Glenfinnan', 'Invergarry', 'Eilean Donan Castle', 'Carbost'],
+    coords: [
+      [-4.4426426, 56.4194488],
+      [-5.1020, 56.6826],
+      [-5.4450, 56.8712],
+      [-4.8275, 57.0680],
+      [-5.51605, 57.27389],
+      [-6.3540, 57.3020]
+    ]
+  },
+  'Carbost naar Old Church Inchmore via Loch Ness': {
+    names: ['Carbost', 'Invergarry', 'Fort Augustus', 'Drumnadrochit', 'Old Church Inchmore'],
+    coords: [
+      [-6.3540, 57.3020],
+      [-4.8275, 57.0680],
+      [-4.6816, 57.1448],
+      [-4.4790, 57.3348],
+      [-4.3810, 57.4576]
+    ]
+  },
+  'Old Church Inchmore naar Pitlochry via Cairngorms': {
+    names: ['Old Church Inchmore', 'Inverness', 'Aviemore', 'Ralia Cafe', 'Birchwood Pitlochry'],
+    coords: [
+      [-4.3810, 57.4576],
+      [-4.2247, 57.4778],
+      [-3.8280, 57.1950],
+      [-4.132932, 57.049697],
+      [-3.72443, 56.70134]
+    ]
+  },
+  'Pitlochry naar Edinburgh via Stirling': {
+    names: ['Birchwood Pitlochry', 'Perth', 'Stirling', 'Edinburgh'],
+    coords: [
+      [-3.72443, 56.70134],
+      [-3.4370, 56.3960],
+      [-3.9369, 56.1165],
+      [-3.1883, 55.9533]
+    ]
+  }
+};
+
 async function searchMapboxLocation(query) {
+  // Alleen fallback voor toekomstige, nog niet vastgezette punten.
   const params = new URLSearchParams({
     q: query,
     country: 'GB',
@@ -63,17 +115,11 @@ async function searchMapboxLocation(query) {
     access_token: MAPBOX_TOKEN
   });
 
-  // Search Box includes POIs such as hotels and sights.
-  let response = await fetch(`https://api.mapbox.com/search/searchbox/v1/forward?${params}`);
-  if (response.ok) {
-    const data = await response.json();
-    const coords = data.features?.[0]?.geometry?.coordinates;
-    if (Array.isArray(coords)) return coords;
+  const response = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?${params}`);
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Mapbox Search gaf ${response.status}${detail ? `: ${detail.slice(0, 120)}` : ''}`);
   }
-
-  // Address/place fallback through Geocoding v6.
-  response = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?${params}`);
-  if (!response.ok) throw new Error(`Locatie niet gevonden: ${query}`);
   const data = await response.json();
   const coords = data.features?.[0]?.geometry?.coordinates;
   if (!Array.isArray(coords)) throw new Error(`Locatie niet gevonden: ${query}`);
@@ -81,7 +127,13 @@ async function searchMapboxLocation(query) {
 }
 
 async function resolveRoutePoints(mapEl) {
-  const { origin, destination, waypoints = '' } = mapEl.dataset;
+  const { origin, destination, waypoints = '', title = '' } = mapEl.dataset;
+
+  // Voor de reisroutes gebruiken we vaste coördinaten. Zo is er geen
+  // geocoding/search-aanvraag nodig voordat Directions kan starten.
+  const fixed = FIXED_ROUTE_POINTS[title];
+  if (fixed) return fixed;
+
   const originCoords = parseCoords(mapEl.dataset.originCoords) || await searchMapboxLocation(origin);
   const destinationCoords = parseCoords(mapEl.dataset.destinationCoords) || await searchMapboxLocation(destination);
   const waypointNames = waypoints ? waypoints.split('|').map(v => v.trim()).filter(Boolean) : [];
@@ -89,7 +141,7 @@ async function resolveRoutePoints(mapEl) {
   for (const waypoint of waypointNames) waypointCoords.push(await searchMapboxLocation(waypoint));
   return {
     names: [origin, ...waypointNames, destination],
-    coords: [originCoords, ...waypointCoords, destination]
+    coords: [originCoords, ...waypointCoords, destinationCoords]
   };
 }
 
@@ -103,8 +155,12 @@ async function fetchDrivingRoute(coords) {
     access_token: MAPBOX_TOKEN
   });
   const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinateString}?${params}`);
-  if (!response.ok) throw new Error('Route kon niet worden berekend.');
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Mapbox Directions gaf ${response.status}${detail ? `: ${detail.slice(0, 140)}` : ''}`);
+  }
   const data = await response.json();
+  if (data.code && data.code !== 'Ok') throw new Error(`Mapbox: ${data.code}${data.message ? ` — ${data.message}` : ''}`);
   if (!data.routes?.[0]?.geometry) throw new Error('Geen route gevonden.');
   return data.routes[0];
 }

@@ -1,51 +1,31 @@
-# Schotland 2026
+# Schotland 2026 — PWA v8
 
-Statische reiswebsite voor onze Schotland-trip van 13 t/m 21 september 2026.
+GitHub Pages-ready, iPhone-first Progressive Web App voor de Schotlandreis van 13 t/m 21 september 2026.
 
-## Structuur
+## Wat is nieuw in v8
 
-```text
-.
-├── index.html
-├── .nojekyll
-├── .gitignore
-├── README.md
-└── assets
-    ├── css
-    │   └── styles.css
-    ├── images
-    │   ├── hero-highlands.webp
-    │   └── highland-landscape.webp
-    └── js
-        ├── config.js
-        └── app.js
-```
+- iPhone/PWA metadata en Apple touch icon
+- standalone app-modus via `manifest.webmanifest`
+- vaste mobiele appnavigatie: Vandaag / Reis / Praktisch / Boven
+- `Vandaag` springt automatisch naar de relevante reisdag
+- huidige reisdag krijgt tijdens de trip een subtiele `VANDAAG` markering
+- app-shell, reisgegevens en lokale afbeeldingen worden offline gecachet
+- knop onder Praktisch om te controleren of de offline app-shell klaarstaat
+- safe-area ondersteuning voor iPhone-notch en home-indicator
 
-## Publiceren met GitHub Pages
+## Installeren op iPhone
 
-1. Maak een nieuwe GitHub repository, bijvoorbeeld `schotland-trip`.
-2. Upload **de inhoud van deze map** naar de root van de repository.
-3. Ga in GitHub naar **Settings → Pages**.
-4. Kies bij **Build and deployment**: `Deploy from a branch`.
-5. Selecteer branch `main` en map `/(root)`.
-6. Sla op.
+1. Open de live site in **Safari**.
+2. Tik op **Delen**.
+3. Kies **Zet op beginscherm**.
+4. Open daarna `Schotland` vanaf het beginscherm.
 
-De site wordt dan bereikbaar via een URL zoals:
+Bezoek de app voor vertrek minstens één keer online. De kern van de reiswebsite werkt daarna zonder verbinding. Interactieve Mapbox-kaarten, live tankstations en links naar Google Maps blijven internet nodig hebben.
 
-`https://<gebruikersnaam>.github.io/schotland-trip/`
+## GitHub Pages
+
+Upload de inhoud van deze map naar de root van de bestaande `Schotland` repository en commit. GitHub Pages deployt daarna automatisch opnieuw.
 
 ## Mapbox
 
-De site gebruikt een **public Mapbox token (`pk.`)** in `assets/js/config.js`.
-
-Wanneer de GitHub Pages URL definitief is, beperk de token in Mapbox bij voorkeur tot je eigen website-URL. Gebruik nooit een `sk.` secret token in deze repository.
-
-## Lokaal testen
-
-Open de site bij voorkeur via een simpele lokale webserver, bijvoorbeeld:
-
-```bash
-python3 -m http.server 8000
-```
-
-Open daarna `http://localhost:8000`.
+De public `pk.` token blijft in `assets/js/config.js`. Gebruik nooit een `sk.` token in frontendcode.

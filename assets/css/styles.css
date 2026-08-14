@@ -213,3 +213,146 @@ dt { color:#7a8076; } dd { margin:0; text-align:right; font-weight:600; }
   .flight-time { grid-column:2/-1; text-align:left; display:flex; gap:12px; align-items:center; }
   .footer-inner { align-items:flex-start; gap:22px; flex-direction:column; }
 }
+
+/* v7: hero countdown, fuel cards, rental details and offline status */
+.hero-countdown { margin: 28px 0 0; display:inline-flex; flex-direction:column; gap:10px; padding:18px 22px 16px; border:1px solid rgba(255,255,255,.28); border-radius:18px; background:rgba(16,25,15,.22); backdrop-filter:blur(8px); }
+.hero-countdown-label { font:700 10px/1 Montserrat,sans-serif; text-transform:uppercase; letter-spacing:.2em; color:rgba(255,255,255,.74); }
+.hero-countdown-values { display:flex; align-items:flex-end; gap:14px; }
+.hero-countdown-values > span { display:flex; align-items:baseline; gap:7px; }
+.hero-countdown-values b { font:400 48px/.85 "Bebas Neue",Impact,sans-serif; letter-spacing:.03em; color:#fff; min-width:38px; }
+.hero-countdown-values small { font:700 9px/1 Montserrat,sans-serif; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.72); }
+.hero-countdown-values i { font:400 27px/.9 "Bebas Neue",sans-serif; font-style:normal; color:rgba(255,255,255,.48); transform:translateY(-4px); }
+
+/* The itinerary now starts immediately below the hero. */
+.itinerary.section { padding-top:90px; }
+
+.fuel-card { padding:22px; border:1px solid var(--line); border-radius:17px; background:rgba(255,253,247,.52); }
+.fuel-card h4 { font-family:"Bebas Neue",sans-serif; font-size:31px; line-height:1; font-weight:400; margin:0 0 12px; letter-spacing:.025em; }
+.fuel-list { display:grid; gap:0; }
+.fuel-item { display:grid; grid-template-columns:1fr auto; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
+.fuel-item:first-child { border-top:0; }
+.fuel-item strong { display:block; font-size:16px; line-height:1.2; }
+.fuel-item small { display:block; margin-top:3px; color:#727970; font-size:13px; line-height:1.25; }
+.fuel-item a { align-self:center; text-decoration:none; font:700 9px Montserrat,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--green); }
+.fuel-loading,.fuel-error { margin:0; color:#6d756b; font-size:15px; }
+.fuel-search-link { display:inline-block; margin-top:12px; color:var(--green); font:700 9px Montserrat,sans-serif; text-transform:uppercase; letter-spacing:.1em; text-decoration:none; }
+.car-rental { background:rgba(49,71,42,.06); }
+.rental-card { margin-top:30px; padding:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); display:grid; grid-template-columns:150px 1fr; gap:24px; }
+.rental-card h3 { margin:0; font:400 38px/1 "Bebas Neue",sans-serif; color:var(--green-dark); }
+.rental-times { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.rental-times span { display:flex; flex-direction:column; }
+.rental-times small { font:700 9px Montserrat,sans-serif; text-transform:uppercase; letter-spacing:.12em; color:var(--green-soft); }
+.rental-times b { margin-top:4px; font:700 13px Montserrat,sans-serif; letter-spacing:.05em; color:var(--green-dark); }
+.rental-times em { margin-top:3px; font-style:normal; color:#6b7269; }
+.offline-note { display:flex !important; flex-direction:row !important; align-items:center; gap:8px; font-size:12px; color:#6e746b; }
+.status-dot { width:8px; height:8px; border-radius:50%; background:#4d7b43; box-shadow:0 0 0 3px rgba(77,123,67,.12); }
+body.is-offline .status-dot { background:#a16b3d; box-shadow:0 0 0 3px rgba(161,107,61,.12); }
+
+@media (max-width:900px){
+  .hero-countdown-values b { font-size:42px; }
+  .day-aside { grid-template-columns:1fr 1fr; }
+  .rental-card { grid-template-columns:1fr; }
+}
+@media (max-width:560px){
+  .hero-countdown { padding:15px 16px 14px; margin-top:20px; }
+  .hero-countdown-values { gap:9px; }
+  .hero-countdown-values b { font-size:36px; }
+  .hero-countdown-values small { font-size:7px; letter-spacing:.08em; }
+  .hero-countdown-values i { font-size:22px; }
+  .itinerary.section { padding-top:62px; }
+  .rental-times { grid-template-columns:1fr; }
+  .offline-note { max-width:260px; }
+}
+
+
+/* v8 — iPhone-first PWA ------------------------------------------------------ */
+html { scroll-padding-top: 92px; }
+body { -webkit-tap-highlight-color: transparent; }
+
+.pwa-install-card {
+  margin: 0 0 26px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 22px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(49,71,42,.055);
+}
+.pwa-install-card h3 { margin:0 0 7px; font:400 32px/1 "Bebas Neue",sans-serif; color:var(--green-dark); }
+.pwa-install-card p:last-child { margin:0; color:#667064; max-width:62ch; }
+.pwa-install-card.installed { background:rgba(49,71,42,.09); }
+
+.mobile-app-nav { display:none; }
+.is-current-trip-day { box-shadow:0 0 0 2px rgba(49,71,42,.20), var(--shadow); }
+.is-current-trip-day > header { position:relative; }
+.is-current-trip-day > header::after {
+  content:"VANDAAG";
+  position:absolute;
+  right:18px;
+  top:14px;
+  padding:7px 9px;
+  border-radius:999px;
+  background:var(--green);
+  color:#fff;
+  font:700 8px/1 Montserrat,sans-serif;
+  letter-spacing:.12em;
+}
+
+@media (max-width: 700px) {
+  :root { --app-nav-height: 68px; }
+  body { padding-bottom: calc(var(--app-nav-height) + env(safe-area-inset-bottom)); }
+  .site-header { padding-top: env(safe-area-inset-top); height:calc(82px + env(safe-area-inset-top)); }
+  .main-nav { top:calc(82px + env(safe-area-inset-top)); }
+  .hero { min-height: calc(100svh - 10px); }
+  .hero-content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .hero-countdown { max-width:100%; }
+
+  .mobile-app-nav {
+    position:fixed;
+    z-index:1000;
+    left:10px;
+    right:10px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    height:var(--app-nav-height);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:3px;
+    padding:6px;
+    border:1px solid rgba(49,71,42,.18);
+    border-radius:22px;
+    background:rgba(244,240,231,.92);
+    box-shadow:0 16px 36px rgba(23,34,20,.18);
+    backdrop-filter:blur(18px) saturate(1.15);
+    -webkit-backdrop-filter:blur(18px) saturate(1.15);
+  }
+  .mobile-app-link {
+    min-width:0;
+    border:0;
+    border-radius:16px;
+    background:transparent;
+    color:var(--green-dark);
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    font:700 8px/1 Montserrat,sans-serif;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .mobile-app-link:active { background:rgba(49,71,42,.08); transform:scale(.98); }
+  .mobile-app-icon { font-size:20px; line-height:1; font-family:system-ui,sans-serif; }
+  .footer { padding-bottom:32px; }
+  .pwa-install-card { grid-template-columns:1fr; }
+  .pwa-install-card .button { width:100%; }
+  .is-current-trip-day > header::after { top:10px; right:10px; }
+}
+
+@media (display-mode: standalone) {
+  body { overscroll-behavior-y:none; }
+  .site-header { background:rgba(244,240,231,.93); }
+  .pwa-install-card .button { display:none; }
+}

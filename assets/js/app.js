@@ -187,9 +187,16 @@ function addRouteMarker(map, coords, label, kind) {
 
 async function initMapboxRoute(mapEl) {
   if (mapEl.dataset.initialized === 'true') return;
-  mapEl.dataset.initialized = 'true';
 
   const { origin, destination, waypoints = '', title = 'Route' } = mapEl.dataset;
+
+  if (!navigator.onLine) {
+    mapEl.dataset.initialized = 'offline';
+    mapEl.innerHTML = '<div class="map-status"><div><strong>Kaart offline</strong><small>De routebeschrijving, stops en hotelinfo blijven beschikbaar. Open de kaart opnieuw zodra je verbinding hebt.</small></div></div>';
+    return;
+  }
+
+  mapEl.dataset.initialized = 'true';
   const openButton = mapEl.parentElement.querySelector('.maps-open');
   if (openButton) {
     openButton.href = mapsDirectionsUrl(origin, destination, waypoints);
@@ -293,3 +300,188 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: .06 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+// --- Tankstations via Mapbox Search Box category search ---
+function googleMapsPointUrl(name, coords) {
+  const url = new URL('https://www.google.com/maps/search/');
+  url.searchParams.set('api', '1');
+  url.searchParams.set('query', `${coords[1]},${coords[0]} (${name})`);
+  return url.toString();
+}
+
+async function loadFuelStations(card) {
+  if (card.dataset.loaded === 'true') return;
+  const list = card.querySelector('.fuel-list');
+  const lng = Number(card.dataset.fuelLng);
+  const lat = Number(card.dataset.fuelLat);
+  const area = card.dataset.fuelArea || 'onderweg';
+
+  if (!navigator.onLine) {
+    list.innerHTML = `<p class="fuel-error">Offline · zoek tankstations rond ${area} zodra je weer bereik hebt.</p>`;
+    card.dataset.loaded = 'offline';
+    return;
+  }
+  if (!MAPBOX_TOKEN || !Number.isFinite(lng) || !Number.isFinite(lat)) {
+    list.innerHTML = '<p class="fuel-error">Tankstations konden niet worden geladen.</p>';
+    return;
+  }
+
+  try {
+    const params = new URLSearchParams({
+      access_token: MAPBOX_TOKEN,
+      language: 'en',
+      country: 'GB',
+      limit: '3',
+      proximity: `${lng},${lat}`
+    });
+    const response = await fetch(`https://api.mapbox.com/search/searchbox/v1/category/gas_station?${params}`);
+    const data = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(data?.message || `HTTP ${response.status}`);
+    const features = data?.features || [];
+    if (!features.length) throw new Error('Geen tankstations gevonden');
+
+    list.replaceChildren(...features.slice(0, 3).map(feature => {
+      const props = feature.properties || {};
+      const coords = feature.geometry?.coordinates || [lng, lat];
+      const item = document.createElement('div');
+      item.className = 'fuel-item';
+      const info = document.createElement('div');
+      const name = props.name || 'Tankstation';
+      const address = props.full_address || props.address || props.place_formatted || area;
+      info.innerHTML = `<strong>${name}</strong><small>${address}</small>`;
+      const link = document.createElement('a');
+      link.href = googleMapsPointUrl(name, coords);
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'Kaart ↗';
+      item.append(info, link);
+      return item;
+    }));
+    card.dataset.loaded = 'true';
+  } catch (error) {
+    console.warn('Tankstations:', error);
+    list.innerHTML = `<p class="fuel-error">Live tankstations niet beschikbaar. Gebruik “Meer in Google Maps”.</p>`;
+  }
+}
+
+const fuelObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    loadFuelStations(entry.target);
+    fuelObserver.unobserve(entry.target);
+  });
+}, { rootMargin: '300px 0px', threshold: 0.01 });
+document.querySelectorAll('.fuel-card').forEach(card => fuelObserver.observe(card));
+
+// --- Online/offline status and retry of network features ---
+function updateConnectionStatus() {
+  const el = document.getElementById('connection-status');
+  const offline = !navigator.onLine;
+  document.body.classList.toggle('is-offline', offline);
+  if (el) el.textContent = offline ? 'Offline · reisinfo blijft beschikbaar' : 'Online · offline-versie wordt bewaard';
+}
+updateConnectionStatus();
+window.addEventListener('offline', updateConnectionStatus);
+window.addEventListener('online', () => {
+  updateConnectionStatus();
+  document.querySelectorAll('.map-shell[data-initialized="offline"]').forEach(el => {
+    el.dataset.initialized = 'false';
+    initMapboxRoute(el);
+  });
+  document.querySelectorAll('.fuel-card[data-loaded="offline"]').forEach(card => {
+    card.dataset.loaded = 'false';
+    loadFuelStations(card);
+  });
+});
+
+// --- PWA / offline app shell ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service worker:', err));
+  });
+}
+
+
+// --- iPhone-first PWA helpers -------------------------------------------------
+const tripDayTargets = [
+  { start: '2026-09-13', end: '2026-09-13', target: 'dag-1', label: 'Dag 1' },
+  { start: '2026-09-14', end: '2026-09-14', target: 'dag-2', label: 'Dag 2' },
+  { start: '2026-09-15', end: '2026-09-15', target: 'dag-3', label: 'Dag 3' },
+  { start: '2026-09-16', end: '2026-09-16', target: 'dag-4', label: 'Dag 4' },
+  { start: '2026-09-17', end: '2026-09-17', target: 'dag-5', label: 'Dag 5' },
+  { start: '2026-09-18', end: '2026-09-20', target: 'edinburgh', label: 'Edinburgh' },
+  { start: '2026-09-21', end: '2026-09-21', target: 'terugreis', label: 'Terugreis' }
+];
+
+function isoLocalDate(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function getTodayTarget() {
+  const today = isoLocalDate();
+  const exact = tripDayTargets.find(item => today >= item.start && today <= item.end);
+  if (exact) return exact;
+  if (today < '2026-09-13') return tripDayTargets[0];
+  return tripDayTargets.at(-1);
+}
+
+function markCurrentTripDay() {
+  const current = getTodayTarget();
+  document.querySelectorAll('.is-current-trip-day').forEach(el => el.classList.remove('is-current-trip-day'));
+  const target = document.getElementById(current.target);
+  if (target) target.classList.add('is-current-trip-day');
+  document.querySelectorAll('[data-jump-today]').forEach(button => {
+    button.setAttribute('aria-label', `Ga naar ${current.label}`);
+  });
+}
+
+markCurrentTripDay();
+
+document.querySelectorAll('[data-jump-today]').forEach(button => {
+  button.addEventListener('click', () => {
+    const current = getTodayTarget();
+    document.getElementById(current.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+if (isStandalone) document.documentElement.classList.add('is-standalone');
+
+const pwaCard = document.getElementById('pwa-install-card');
+if (isStandalone && pwaCard) {
+  pwaCard.classList.add('installed');
+  pwaCard.querySelector('h3').textContent = 'Schotland staat op je iPhone';
+  pwaCard.querySelector('p:last-of-type').textContent = 'De app-shell en reisgegevens zijn lokaal beschikbaar. Interactieve Mapbox-kaarten en live tankstations hebben nog internet nodig.';
+}
+
+const offlineCheck = document.getElementById('offline-check');
+offlineCheck?.addEventListener('click', async () => {
+  offlineCheck.disabled = true;
+  offlineCheck.textContent = 'Controleren…';
+  try {
+    const registration = await navigator.serviceWorker?.ready;
+    if (!registration?.active) throw new Error('Service worker niet actief');
+
+    const reply = new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Geen antwoord')), 2500);
+      navigator.serviceWorker.addEventListener('message', function handler(event) {
+        if (event.data?.type !== 'OFFLINE_STATUS') return;
+        clearTimeout(timer);
+        navigator.serviceWorker.removeEventListener('message', handler);
+        resolve(event.data.ready);
+      });
+    });
+
+    registration.active.postMessage({ type: 'CHECK_OFFLINE' });
+    const ready = await reply;
+    offlineCheck.textContent = ready ? 'Offline klaar ✓' : 'Nog één keer online openen';
+  } catch (_) {
+    offlineCheck.textContent = navigator.onLine ? 'Herlaad de app' : 'Je bent offline';
+  } finally {
+    setTimeout(() => { offlineCheck.disabled = false; }, 1200);
+  }
+});

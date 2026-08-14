@@ -3,7 +3,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#31472a" name="theme-color"/>
 <meta content="Schotland 2026 — roadtrip door de Highlands, Isle of Skye en Edinburgh." name="description"/>
 <title>Schotland 2026 · Highlands &amp; Edinburgh</title>
@@ -11,9 +11,14 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Montserrat:wght@500;600;700&amp;family=Roboto+Condensed:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.25.0/mapbox-gl.css" rel="stylesheet"/>
-<link href="assets/css/styles.css?v=3" rel="stylesheet"/>
-<meta content="Schotland 2026 · Highlands &amp; Edinburgh" property="og:title"/><meta content="Onze roadtrip door de Highlands, Isle of Skye en Edinburgh." property="og:description"/><meta content="website" property="og:type"/><link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏔️</text></svg>">
-</head>
+<link href="assets/css/styles.css?v=8" rel="stylesheet"/>
+<meta content="Schotland 2026 · Highlands &amp; Edinburgh" property="og:title"/><meta content="Onze roadtrip door de Highlands, Isle of Skye en Edinburgh." property="og:description"/><meta content="website" property="og:type"/><link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🏔️&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="assets/icons/icon-180.png" rel="apple-touch-icon"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="Schotland" name="apple-mobile-web-app-title"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="telephone=no" name="format-detection"/></head>
 <body>
 <!-- Self-contained preview: CSS, JS and local images are embedded in this file. -->
 <a class="skip-link" href="#main">Naar inhoud</a>
@@ -25,13 +30,10 @@
 <span><b>SCHOTLAND</b><small>13 — 21 SEP 2026</small></span>
 </a>
 <div class="header-tools">
-<div aria-label="Aftellen tot vertrek op 13 september 2026 om 16 uur" class="countdown" id="trip-countdown">
-<span class="countdown-label">Vertrek over</span>
-<span class="countdown-time"><b data-days="">--</b>d · <b data-hours="">--</b>u · <span class="countdown-minutes"><b data-minutes="">--</b>m</span></span>
-</div>
+
 <button aria-controls="main-nav" aria-expanded="false" class="menu-button" type="button">Menu</button>
 <nav aria-label="Hoofdnavigatie" class="main-nav" id="main-nav">
-<a href="#overzicht">Overzicht</a>
+
 <a href="#reis">Dag per dag</a>
 <a href="#praktisch">Praktisch</a>
 </nav>
@@ -44,7 +46,16 @@
 <div class="hero-content shell">
 <p class="eyebrow light">Roadtrip · Schotland 2026</p>
 <h1 id="hero-title">Highlands.<br/>Skye.<br/>Edinburgh.</h1>
-<p class="hero-lead">Negen dagen langs ruige glens, iconische wegen, Isle of Skye en Edinburgh.</p>
+<div aria-label="Aftellen tot vertrek op 13 september 2026 om 16 uur" class="hero-countdown" id="trip-countdown">
+<span class="hero-countdown-label">Vertrek over</span>
+<div class="hero-countdown-values">
+<span><b data-days="">--</b><small>dagen</small></span>
+<i>:</i>
+<span><b data-hours="">--</b><small>uur</small></span>
+<i>:</i>
+<span><b data-minutes="">--</b><small>min</small></span>
+</div>
+</div>
 <div class="hero-actions">
 <a class="button button-light" href="#reis">Bekijk de reis</a>
 <a class="text-link light-link" href="#praktisch">Praktisch <span>→</span></a>
@@ -52,29 +63,12 @@
 </div>
 <div aria-hidden="true" class="hero-index">SCOTLAND · 56° N</div>
 </section>
-<section class="intro shell section" id="overzicht">
-<div class="section-kicker"><span>01</span> Reisoverzicht</div>
-<div class="intro-grid">
-<div>
-<p class="eyebrow">13 — 21 september 2026</p>
-<h2>Van Edinburgh naar de Highlands en terug.</h2>
-</div>
-<div class="intro-copy">
-<p>De reis start op Edinburgh Airport en trekt via de Trossachs, Glencoe en Glenfinnan naar Isle of Skye. Daarna gaat het via Loch Ness en de Cairngorms naar Pitlochry, Stirling en Edinburgh.</p>
-<div class="stats">
-<div><strong>9</strong><span>dagen</span></div>
-<div><strong>5</strong><span>autoroutes</span></div>
-<div><strong>4</strong><span>Highland-nachten</span></div>
-<div><strong>2</strong><span>vluchten</span></div>
-</div>
-</div>
-</div>
-</section>
+
 <section class="itinerary section" id="reis">
 <div class="shell">
 <div class="section-heading">
 <div>
-<div class="section-kicker"><span>02</span> Dag per dag</div>
+<div class="section-kicker"><span>01</span> Dag per dag</div>
 <h2>De reis</h2>
 </div>
 <p>Route, stops, Google Maps en verblijf staan per dag samen. Zo is alles onderweg op één plek terug te vinden.</p>
@@ -120,7 +114,12 @@
 <li>A84 naar Luib</li>
 </ul>
 </div>
-<div class="hotel-card">
+<div class="fuel-card" data-fuel-area="Callander" data-fuel-lat="56.24403" data-fuel-lng="-4.21446">
+<p class="mini-label">Tankstations onderweg</p>
+<h4>Rond Callander</h4>
+<div class="fuel-list"><p class="fuel-loading">Worden geladen via Mapbox…</p></div>
+<a class="fuel-search-link" href="https://www.google.com/maps/search/?api=1&amp;query=tankstation+Callander" rel="noopener" target="_blank">Meer in Google Maps ↗</a>
+</div><div class="info-block car-rental"><p class="mini-label">Huurauto · Alamo</p><h4>Ophalen 18:00</h4><p>Edinburgh Airport · zondag 13 september</p></div><div class="hotel-card">
 <p class="mini-label">Overnachting</p>
 <h4>The Luib Hotel</h4>
 <p>A85 Glen Dochart, Crianlarich</p>
@@ -164,7 +163,12 @@
 <li>Skye Bridge</li>
 </ul>
 </div>
-<div class="hotel-card">
+<div class="fuel-card" data-fuel-area="Fort William" data-fuel-lat="56.8198" data-fuel-lng="-5.1050">
+<p class="mini-label">Tankstations onderweg</p>
+<h4>Rond Fort William</h4>
+<div class="fuel-list"><p class="fuel-loading">Worden geladen via Mapbox…</p></div>
+<a class="fuel-search-link" href="https://www.google.com/maps/search/?api=1&amp;query=tankstation+Fort William" rel="noopener" target="_blank">Meer in Google Maps ↗</a>
+</div><div class="hotel-card">
 <p class="mini-label">Overnachting</p>
 <h4>The Old Inn</h4>
 <p>Carbost, Isle of Skye</p>
@@ -207,7 +211,12 @@
 <li>Drumnadrochit / Loch Ness</li>
 </ul>
 </div>
-<div class="hotel-card">
+<div class="fuel-card" data-fuel-area="Fort Augustus" data-fuel-lat="57.1448" data-fuel-lng="-4.6816">
+<p class="mini-label">Tankstations onderweg</p>
+<h4>Rond Fort Augustus</h4>
+<div class="fuel-list"><p class="fuel-loading">Worden geladen via Mapbox…</p></div>
+<a class="fuel-search-link" href="https://www.google.com/maps/search/?api=1&amp;query=tankstation+Fort Augustus" rel="noopener" target="_blank">Meer in Google Maps ↗</a>
+</div><div class="hotel-card">
 <p class="mini-label">Overnachting</p>
 <h4>Old Church</h4>
 <p>Inchmore, Kirkhill, Inverness IV5 7PX</p>
@@ -251,7 +260,12 @@
 <li>Cairngorms National Park</li>
 </ul>
 </div>
-<div class="hotel-card">
+<div class="fuel-card" data-fuel-area="Aviemore" data-fuel-lat="57.1950" data-fuel-lng="-3.8280">
+<p class="mini-label">Tankstations onderweg</p>
+<h4>Rond Aviemore</h4>
+<div class="fuel-list"><p class="fuel-loading">Worden geladen via Mapbox…</p></div>
+<a class="fuel-search-link" href="https://www.google.com/maps/search/?api=1&amp;query=tankstation+Aviemore" rel="noopener" target="_blank">Meer in Google Maps ↗</a>
+</div><div class="hotel-card">
 <p class="mini-label">Overnachting</p>
 <h4>Birchwood</h4>
 <p>Pitlochry</p>
@@ -284,13 +298,13 @@
 </div>
 <div class="map-actions"><a class="button button-green maps-open" rel="noopener" target="_blank">Open in Google Maps ↗</a></div>
 </div>
-<aside class="day-aside">
+<aside class="day-aside"><div class="info-block car-rental"><p class="mini-label">Huurauto · Alamo</p><h4>Terugbrengen 18:00</h4><p>Donderdag 17 september · Edinburgh</p></div>
 <div class="info-block">
 <p class="mini-label">Onderweg</p>
 <ul class="clean-list">
 <li>A9 richting Perth</li>
 <li>Stirling</li>
-<li>Terugbrengen huurauto in Edinburgh</li>
+<li>Alamo-huurauto terugbrengen om 18:00</li>
 </ul>
 </div>
 <div class="info-block emphasis">
@@ -298,7 +312,12 @@
 <h4>Edinburgh</h4>
 <p>Vanaf donderdag 17 september verblijven we in Edinburgh voor het laatste deel van de reis.</p>
 </div>
-</aside>
+<div class="fuel-card" data-fuel-area="Stirling" data-fuel-lat="56.1165" data-fuel-lng="-3.9369">
+<p class="mini-label">Tankstations onderweg</p>
+<h4>Rond Stirling</h4>
+<div class="fuel-list"><p class="fuel-loading">Worden geladen via Mapbox…</p></div>
+<a class="fuel-search-link" href="https://www.google.com/maps/search/?api=1&amp;query=tankstation+Stirling" rel="noopener" target="_blank">Meer in Google Maps ↗</a>
+</div></aside>
 </div>
 </article>
 <article class="city-days reveal" id="edinburgh">
@@ -309,7 +328,7 @@
 <p>Drie dagen zonder roadtrip. Hier kunnen we later de stadsplanning, restaurants en het bezoek aan je vriend in dezelfde stijl toevoegen.</p>
 </div>
 </article>
-<article class="return-day reveal">
+<article class="return-day reveal" id="terugreis">
 <div class="date-badge"><strong>21</strong><span>SEP</span></div>
 <div>
 <p class="day-kicker">Maandag · Terugreis</p>
@@ -324,8 +343,16 @@
 <div class="shell practical-grid">
 <div class="practical-photo"><img alt="Highland landschap" decoding="async" loading="lazy" src="assets/images/highland-landscape.webp"/></div>
 <div class="practical-copy">
-<div class="section-kicker"><span>03</span> Praktisch</div>
+<div class="section-kicker"><span>02</span> Praktisch</div>
 <h2>Vluchten &amp; vertrek</h2>
+<div class="pwa-install-card" id="pwa-install-card">
+<div>
+<p class="mini-label">iPhone app</p>
+<h3>Neem Schotland offline mee</h3>
+<p>Open deze site in Safari, tik op <strong>Delen</strong> en kies <strong>Zet op beginscherm</strong>. Daarna opent hij als een aparte app en blijven de reisgegevens offline beschikbaar.</p>
+</div>
+<button class="button button-green" type="button" id="offline-check">Controleer offline</button>
+</div>
 <div class="flight-card">
 <div class="flight-code">FR7353</div>
 <div><span>CRL</span><small>Charleroi</small></div><div class="flight-line">→</div><div><span>EDI</span><small>Edinburgh</small></div>
@@ -336,18 +363,28 @@
 <div><span>EDI</span><small>Edinburgh</small></div><div class="flight-line">→</div><div><span>CRL</span><small>Charleroi</small></div>
 <div class="flight-time"><b>21 SEP</b><span>08:35 → 11:20</span></div>
 </div>
-<p class="note">De volgende praktische laag kan huurautogegevens, boekingsnummers, parkeren, tickets en offline/noodinfo bevatten.</p>
+<div class="rental-card">
+<div><p class="mini-label">Huurauto</p><h3>Alamo</h3></div>
+<div class="rental-times"><span><small>Ophalen</small><b>ZO 13 SEP · 18:00</b><em>Edinburgh Airport</em></span><span><small>Terugbrengen</small><b>DO 17 SEP · 18:00</b><em>Edinburgh</em></span></div>
+</div>
 </div>
 </div>
 </section>
 </main>
+<nav class="mobile-app-nav" aria-label="Appnavigatie">
+<button class="mobile-app-link" type="button" data-jump-today aria-label="Ga naar vandaag">
+<span class="mobile-app-icon" aria-hidden="true">◉</span><span>Vandaag</span>
+</button>
+<a class="mobile-app-link" href="#reis"><span class="mobile-app-icon" aria-hidden="true">▤</span><span>Reis</span></a>
+<a class="mobile-app-link" href="#praktisch"><span class="mobile-app-icon" aria-hidden="true">✦</span><span>Praktisch</span></a>
+<a class="mobile-app-link" href="#top"><span class="mobile-app-icon" aria-hidden="true">⌃</span><span>Boven</span></a>
+</nav>
 <footer class="footer">
 <div class="shell footer-inner">
-<div><strong>SCHOTLAND 2026</strong><span>Highlands · Isle of Skye · Edinburgh</span></div>
+<div class="offline-note"><span class="status-dot"></span><span id="connection-status">Online · offline-versie wordt bewaard</span></div><div><strong>SCHOTLAND 2026</strong><span>Highlands · Isle of Skye · Edinburgh</span></div>
 <a href="#top">Naar boven ↑</a>
 </div>
 </footer>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.25.0/mapbox-gl.js"></script>
-
-<script src="assets/js/config.js?v=3"></script><script defer="" src="assets/js/app.js?v=3"></script></body>
+<script src="assets/js/config.js?v=8"></script><script defer="" src="assets/js/app.js?v=8"></script></body>
 </html>

@@ -1,31 +1,19 @@
-# Schotland 2026 — PWA v8
+# Schotland 2026 - responsive website
 
-GitHub Pages-ready, iPhone-first Progressive Web App voor de Schotlandreis van 13 t/m 21 september 2026.
+Deze versie gaat terug naar de klassieke website-layout van voor de PWA-versie, maar is expliciet geoptimaliseerd voor mobiel.
 
-## Wat is nieuw in v8
+## Mobiele layout
+Op schermen tot 760 px wordt elk dagblok volledig verticaal:
+1. route
+2. interactieve Mapbox-kaart
+3. knop Open in Google Maps
+4. vlucht/route/highlights
+5. tankstations
+6. huurauto/hotel
 
-- iPhone/PWA metadata en Apple touch icon
-- standalone app-modus via `manifest.webmanifest`
-- vaste mobiele appnavigatie: Vandaag / Reis / Praktisch / Boven
-- `Vandaag` springt automatisch naar de relevante reisdag
-- huidige reisdag krijgt tijdens de trip een subtiele `VANDAAG` markering
-- app-shell, reisgegevens en lokale afbeeldingen worden offline gecachet
-- knop onder Praktisch om te controleren of de offline app-shell klaarstaat
-- safe-area ondersteuning voor iPhone-notch en home-indicator
-
-## Installeren op iPhone
-
-1. Open de live site in **Safari**.
-2. Tik op **Delen**.
-3. Kies **Zet op beginscherm**.
-4. Open daarna `Schotland` vanaf het beginscherm.
-
-Bezoek de app voor vertrek minstens één keer online. De kern van de reiswebsite werkt daarna zonder verbinding. Interactieve Mapbox-kaarten, live tankstations en links naar Google Maps blijven internet nodig hebben.
+De infovakken staan dus nooit naast de kaart op een iPhone.
 
 ## GitHub Pages
+Upload de volledige inhoud van deze map naar de root van de repository. De bestaande Mapbox public token staat in `assets/js/config.js`.
 
-Upload de inhoud van deze map naar de root van de bestaande `Schotland` repository en commit. GitHub Pages deployt daarna automatisch opnieuw.
-
-## Mapbox
-
-De public `pk.` token blijft in `assets/js/config.js`. Gebruik nooit een `sk.` token in frontendcode.
+Dit is bewust geen PWA: geen manifest, service worker of app-shell.

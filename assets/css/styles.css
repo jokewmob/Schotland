@@ -244,9 +244,6 @@ dt { color:#7a8076; } dd { margin:0; text-align:right; font-weight:600; }
 .rental-times small { font:700 9px Montserrat,sans-serif; text-transform:uppercase; letter-spacing:.12em; color:var(--green-soft); }
 .rental-times b { margin-top:4px; font:700 13px Montserrat,sans-serif; letter-spacing:.05em; color:var(--green-dark); }
 .rental-times em { margin-top:3px; font-style:normal; color:#6b7269; }
-.offline-note { display:flex !important; flex-direction:row !important; align-items:center; gap:8px; font-size:12px; color:#6e746b; }
-.status-dot { width:8px; height:8px; border-radius:50%; background:#4d7b43; box-shadow:0 0 0 3px rgba(77,123,67,.12); }
-body.is-offline .status-dot { background:#a16b3d; box-shadow:0 0 0 3px rgba(161,107,61,.12); }
 
 @media (max-width:900px){
   .hero-countdown-values b { font-size:42px; }
@@ -261,98 +258,77 @@ body.is-offline .status-dot { background:#a16b3d; box-shadow:0 0 0 3px rgba(161,
   .hero-countdown-values i { font-size:22px; }
   .itinerary.section { padding-top:62px; }
   .rental-times { grid-template-columns:1fr; }
-  .offline-note { max-width:260px; }
 }
 
 
-/* v8 — iPhone-first PWA ------------------------------------------------------ */
-html { scroll-padding-top: 92px; }
-body { -webkit-tap-highlight-color: transparent; }
+/* v9 - responsive website (pre-PWA visual direction) */
+@media (max-width: 760px) {
+  :root { --shell: min(100% - 24px, 680px); }
 
-.pwa-install-card {
-  margin: 0 0 26px;
-  padding: 22px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 22px;
-  align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(49,71,42,.055);
-}
-.pwa-install-card h3 { margin:0 0 7px; font:400 32px/1 "Bebas Neue",sans-serif; color:var(--green-dark); }
-.pwa-install-card p:last-child { margin:0; color:#667064; max-width:62ch; }
-.pwa-install-card.installed { background:rgba(49,71,42,.09); }
-
-.mobile-app-nav { display:none; }
-.is-current-trip-day { box-shadow:0 0 0 2px rgba(49,71,42,.20), var(--shadow); }
-.is-current-trip-day > header { position:relative; }
-.is-current-trip-day > header::after {
-  content:"VANDAAG";
-  position:absolute;
-  right:18px;
-  top:14px;
-  padding:7px 9px;
-  border-radius:999px;
-  background:var(--green);
-  color:#fff;
-  font:700 8px/1 Montserrat,sans-serif;
-  letter-spacing:.12em;
-}
-
-@media (max-width: 700px) {
-  :root { --app-nav-height: 68px; }
-  body { padding-bottom: calc(var(--app-nav-height) + env(safe-area-inset-bottom)); }
-  .site-header { padding-top: env(safe-area-inset-top); height:calc(82px + env(safe-area-inset-top)); }
-  .main-nav { top:calc(82px + env(safe-area-inset-top)); }
-  .hero { min-height: calc(100svh - 10px); }
-  .hero-content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-  .hero-countdown { max-width:100%; }
-
-  .mobile-app-nav {
-    position:fixed;
-    z-index:1000;
-    left:10px;
-    right:10px;
-    bottom:calc(8px + env(safe-area-inset-bottom));
-    height:var(--app-nav-height);
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:3px;
-    padding:6px;
-    border:1px solid rgba(49,71,42,.18);
-    border-radius:22px;
-    background:rgba(244,240,231,.92);
-    box-shadow:0 16px 36px rgba(23,34,20,.18);
-    backdrop-filter:blur(18px) saturate(1.15);
-    -webkit-backdrop-filter:blur(18px) saturate(1.15);
+  /* Each travel day is a strict vertical flow on phones:
+     route + map first, then every information card below it. */
+  .day-grid { display: block; }
+  .day-main { width: 100%; padding: 22px 18px 24px; }
+  .day-aside {
+    width: 100%;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(235,229,216,.35);
   }
-  .mobile-app-link {
-    min-width:0;
-    border:0;
-    border-radius:16px;
-    background:transparent;
-    color:var(--green-dark);
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    font:700 8px/1 Montserrat,sans-serif;
-    letter-spacing:.06em;
-    text-transform:uppercase;
+  .day-aside > * { width: 100%; margin: 0; }
+
+  .route-line,
+  .route-line-wrap {
+    flex-wrap: wrap;
+    row-gap: 7px;
+    line-height: 1.35;
   }
-  .mobile-app-link:active { background:rgba(49,71,42,.08); transform:scale(.98); }
-  .mobile-app-icon { font-size:20px; line-height:1; font-family:system-ui,sans-serif; }
-  .footer { padding-bottom:32px; }
-  .pwa-install-card { grid-template-columns:1fr; }
-  .pwa-install-card .button { width:100%; }
-  .is-current-trip-day > header::after { top:10px; right:10px; }
+
+  .map-shell,
+  .google-map,
+  .mapbox-map,
+  .map-placeholder {
+    width: 100%;
+    min-height: 340px;
+    height: 340px;
+    border-radius: 16px;
+  }
+
+  .map-actions { margin-top: 14px; }
+  .map-actions .button { width: 100%; text-align: center; }
+
+  .info-block,
+  .hotel-card,
+  .fuel-card { border-radius: 15px; }
+
+  .trip-day { border-radius: 22px; }
+  .trip-day-head { padding: 24px 18px 21px; }
+  .drive-summary { gap: 6px; }
+  .drive-summary span { padding: 7px 10px; font-size: 9px; }
+
+  .hero-content { padding-bottom: 52px; }
+  .hero-countdown { max-width: 100%; }
+  .hero-countdown-values { flex-wrap: nowrap; }
+
+  .section-heading { margin-bottom: 34px; }
+  .itinerary.section { padding-top: 56px; }
 }
 
-@media (display-mode: standalone) {
-  body { overscroll-behavior-y:none; }
-  .site-header { background:rgba(244,240,231,.93); }
-  .pwa-install-card .button { display:none; }
+@media (max-width: 420px) {
+  .site-header { height: 72px; }
+  .main-nav { top: 72px; }
+  .brand-mark { width: 36px; }
+  .brand b { font-size: 23px; }
+  .hero { min-height: 620px; }
+  .hero h1 { font-size: clamp(62px, 20vw, 84px); }
+  .hero-countdown-values b { font-size: 32px; }
+  .hero-countdown-values > span { gap: 4px; }
+  .hero-countdown-values { gap: 7px; }
+  .hero-countdown-values small { font-size: 6px; }
+  .day-title h3, .city-days h3, .return-day h3 { font-size: 33px; }
+  .map-shell, .google-map, .mapbox-map, .map-placeholder { min-height: 315px; height: 315px; }
 }
